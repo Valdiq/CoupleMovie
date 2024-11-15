@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysql-container-couple-movie
+    env_file:
+      - docker-compose-local_only.env
+    ports:
+      - "3309:3306"
+
+  mongodb:
+    image: mongo
+    container_name: mongo-container-couple-movie
+    env_file:
+      - docker-compose-local_only.env
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: redis
+    container_name: redis-container-couple-movie
+    env_file:
+      - docker-compose-local_only.env
+    ports:
+      - "6379:6379"
+
+  kafka:
+    image: apache/kafka
+    container_name: kafka-container-couple-movie
+    ports:
+      - "9092:9092"
