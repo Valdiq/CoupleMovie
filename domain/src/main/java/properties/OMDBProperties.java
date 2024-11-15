@@ -1,4 +1,4 @@
-package org.example.couplemovie.properties;
+package properties;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

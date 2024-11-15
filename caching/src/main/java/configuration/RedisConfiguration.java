@@ -1,6 +1,7 @@
-package org.example.couplemovie.configuration;
+package configuration;
 
-import org.example.couplemovie.entity.FilmEntity;
+import model.CachedFilmEntity;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -19,17 +20,18 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 
 @Configuration
+@EnableAutoConfiguration
 @EnableCaching
 public class RedisConfiguration {
 
     @Bean
-    ReactiveRedisOperations<String, FilmEntity> redisOperations(ReactiveRedisConnectionFactory factory) {
-        Jackson2JsonRedisSerializer<FilmEntity> serializer = new Jackson2JsonRedisSerializer<>(FilmEntity.class);
+    ReactiveRedisOperations<String, CachedFilmEntity> redisOperations(ReactiveRedisConnectionFactory factory) {
+        Jackson2JsonRedisSerializer<CachedFilmEntity> serializer = new Jackson2JsonRedisSerializer<>(CachedFilmEntity.class);
 
-        RedisSerializationContext.RedisSerializationContextBuilder<String, FilmEntity> builder =
+        RedisSerializationContext.RedisSerializationContextBuilder<String, CachedFilmEntity> builder =
                 RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
 
-        RedisSerializationContext<String, FilmEntity> context = builder.value(serializer).build();
+        RedisSerializationContext<String, CachedFilmEntity> context = builder.value(serializer).build();
 
         return new ReactiveRedisTemplate<>(factory, context);
     }
