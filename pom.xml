@@ -31,11 +31,17 @@
         <lombok.version>1.18.34</lombok.version>
         <reactor-test.version>3.7.0</reactor-test.version>
         <jackson-databind.version>2.18.1</jackson-databind.version>
+        <r2dbc-mysql.version>0.8.2.RELEASE</r2dbc-mysql.version>
 
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>dev.miku</groupId>
+                <artifactId>r2dbc-mysql</artifactId>
+                <version>${r2dbc-mysql.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
