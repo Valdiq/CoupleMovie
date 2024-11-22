@@ -1,4 +1,4 @@
-package model;
+package org.example.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

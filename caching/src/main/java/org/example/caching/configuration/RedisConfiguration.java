@@ -1,6 +1,6 @@
-package configuration;
+package org.example.caching.configuration;
 
-import model.CachedFilmEntity;
+import org.example.caching.model.CachedFilmEntity;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
