@@ -1,4 +1,4 @@
-package properties;
+package org.example.domain.properties;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package model;
+package org.example.caching.model;
 
 import org.springframework.data.redis.core.RedisHash;
 

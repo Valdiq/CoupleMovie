@@ -1,6 +1,6 @@
-package repository;
+package org.example.domain.repository;
 
-import entity.FilmEntity;
+import org.example.domain.entity.FilmEntity;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
 
