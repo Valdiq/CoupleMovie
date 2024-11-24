@@ -53,7 +53,7 @@
         </dependency>
 
         <dependency>
-            <groupId>dev.miku</groupId>
+            <groupId>io.asyncer</groupId>
             <artifactId>r2dbc-mysql</artifactId>
         </dependency>
     </dependencies>
