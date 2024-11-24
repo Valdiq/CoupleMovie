@@ -1,6 +1,8 @@
 package org.example.domain.service;
 
+import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
 import org.example.domain.entity.FilmEntity;
+import org.example.domain.exception.FilmSaveException;
 import org.example.domain.model.FilmResponse;
 import org.example.domain.properties.OMDBProperties;
 import org.example.domain.repository.FilmRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -31,7 +34,7 @@ public class FilmService {
         this.webClient = webClient.baseUrl(properties.baseUrl()).build();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveFilmsToDatabase(Flux<FilmResponse> filmResponses) {
         filmResponses.flatMap(filmResponse -> Flux.fromIterable(filmResponse.search()))
                 .map(filmDTO -> new FilmEntity()
@@ -40,10 +43,15 @@ public class FilmService {
                         .setImdbId(filmDTO.imdbId())
                         .setType(filmDTO.type())
                         .setPoster(filmDTO.poster()))
-                .flatMap(filmRepository::save)
+                .flatMap(film -> filmRepository.save(film)
+                        .onErrorResume(R2dbcDataIntegrityViolationException.class, e -> {
+                            return Mono.empty();
+                        }))
                 .subscribe(
-                    savedFilm -> log.debug("Saved film: {}", savedFilm.getTitle()),
-                    error -> log.error("Error saving films to database", error)
+                        savedFilm -> log.debug("Saved film: {}", savedFilm.getTitle()),
+                        error -> {
+                            throw new FilmSaveException("Error saving films to database - " + error.getCause().getMessage());
+                        }
                 );
     }
 
