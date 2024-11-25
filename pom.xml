@@ -20,6 +20,7 @@
         <module>web-server</module>
         <module>domain</module>
         <module>caching</module>
+        <module>logging</module>
     </modules>
 
     <properties>
@@ -38,6 +39,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
             <dependency>
                 <groupId>io.asyncer</groupId>
                 <artifactId>r2dbc-mysql</artifactId>
@@ -60,7 +66,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+                <artifactId>spring-boot-starter-data-mongodb</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
