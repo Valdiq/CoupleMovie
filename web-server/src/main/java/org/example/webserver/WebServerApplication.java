@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.example.domain.properties.OMDBProperties;
 
@@ -12,10 +13,12 @@ import org.example.domain.properties.OMDBProperties;
 @EnableConfigurationProperties(OMDBProperties.class)
 @EnableCaching
 @EnableR2dbcRepositories(basePackages = "org.example.domain.repository")
+@EnableMongoRepositories(basePackages = "org.example.logging.repository")
 @ComponentScan(basePackages = {
-    "org.example.caching",
-    "org.example.webserver",
-    "org.example.domain"
+        "org.example.caching",
+        "org.example.webserver",
+        "org.example.domain",
+        "org.example.logging"
 })
 public class WebServerApplication {
 
