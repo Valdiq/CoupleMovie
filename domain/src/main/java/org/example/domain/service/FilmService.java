@@ -6,6 +6,7 @@ import org.example.domain.exception.FilmSaveException;
 import org.example.domain.model.FilmResponse;
 import org.example.domain.properties.OMDBProperties;
 import org.example.domain.repository.FilmRepository;
+import org.example.logging.logger.ServiceLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,6 +16,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,9 +31,12 @@ public class FilmService {
 
     private final WebClient webClient;
 
-    public FilmService(FilmRepository filmRepository, OMDBProperties properties, WebClient.Builder webClient) {
+    private final List<ServiceLogger> loggerList;
+
+    public FilmService(FilmRepository filmRepository, OMDBProperties properties, WebClient.Builder webClient, List<ServiceLogger> loggerList) {
         this.filmRepository = filmRepository;
         this.properties = properties;
+        this.loggerList = loggerList;
         this.webClient = webClient.baseUrl(properties.baseUrl()).build();
     }
 
@@ -45,11 +51,17 @@ public class FilmService {
                         .setPoster(filmDTO.poster()))
                 .flatMap(film -> filmRepository.save(film)
                         .onErrorResume(R2dbcDataIntegrityViolationException.class, e -> {
+                            loggerList.forEach(logger -> {
+                                logger.log("saveFilmsToDatabase", e.getClass().toString(), "Error saving films to database - " + e.getCause().getMessage(), LocalDateTime.now());
+                            });
                             return Mono.empty();
                         }))
                 .subscribe(
                         savedFilm -> log.debug("Saved film: {}", savedFilm.getTitle()),
                         error -> {
+                            loggerList.forEach(logger -> {
+                                logger.log("saveFilmsToDatabase", error.getClass().toString(), "Error saving films to database - " + error.getCause().getMessage(), LocalDateTime.now());
+                            });
                             throw new FilmSaveException("Error saving films to database - " + error.getCause().getMessage());
                         }
                 );
