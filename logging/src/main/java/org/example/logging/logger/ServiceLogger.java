@@ -6,5 +6,5 @@ import java.time.LocalDateTime;
 
 @Component
 public interface ServiceLogger {
-    public void log(String className, String exceptionName, String message, LocalDateTime dateTime);
+    public void log(String className, String methodName, String exceptionName, String message, LocalDateTime dateTime);
 }
