@@ -17,6 +17,8 @@ public class ServiceExceptionLogDocument {
 
     private String className;
 
+    private String methodName;
+
     private String exceptionName;
 
     private String message;

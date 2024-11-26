@@ -14,9 +14,10 @@ public class MongoServiceLogger implements ServiceLogger {
     private final ServiceExceptionLogRepository serviceExceptionLogRepository;
 
     @Override
-    public void log(String className, String exceptionName, String message, LocalDateTime dateTime) {
+    public void log(String className, String methodName, String exceptionName, String message, LocalDateTime dateTime) {
         serviceExceptionLogRepository.insert(new ServiceExceptionLogDocument()
                 .setClassName(className)
+                .setMethodName(methodName)
                 .setExceptionName(exceptionName)
                 .setMessage(message)
                 .setLocalDateTime(dateTime));
