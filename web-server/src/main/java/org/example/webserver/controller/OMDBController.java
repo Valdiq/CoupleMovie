@@ -33,4 +33,10 @@ public class OMDBController {
         return expandedFilmService.getFilm(imdbId);
     }
 
+    @LogExecutionTime
+    @GetMapping("/get/random")
+    public Mono<ExpandedFilmDTO> getRandomFilm() {
+        return expandedFilmService.getRandomFilm();
+    }
+
 }

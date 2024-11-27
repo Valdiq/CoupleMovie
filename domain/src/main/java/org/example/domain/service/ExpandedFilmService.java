@@ -1,6 +1,7 @@
 package org.example.domain.service;
 
 import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
+import org.example.domain.entity.ExpandedFilmEntity;
 import org.example.domain.exception.FilmSaveException;
 import org.example.domain.mapper.FilmMapper;
 import org.example.domain.model.ExpandedFilmDTO;
@@ -80,6 +81,16 @@ public class ExpandedFilmService {
         );
 
         return response;
+    }
+
+    public Mono<ExpandedFilmDTO> getRandomFilm() {
+        ExpandedFilmEntity randomFilm = expandedFilmRepository.count()
+                .flatMap(count -> {
+                    int randomOffset = (int) (Math.random() * count);
+                    return expandedFilmRepository.findRandomFilm(randomOffset);
+                }).block();
+
+        return Mono.just(filmMapper.expandedFilmEntityToDTO(randomFilm));
     }
 
 }
