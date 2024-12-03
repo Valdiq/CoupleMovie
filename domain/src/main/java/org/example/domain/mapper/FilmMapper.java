@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface FilmMapper {
-    
+
     @Mapping(target = "id", ignore = true)
     PreviewFilmEntity previewFilmDTOToEntity(PreviewFilmDTO previewFilmDTO);
 
@@ -20,4 +20,12 @@ public interface FilmMapper {
     ExpandedFilmEntity previewFilmEntityToexpandedFilmEntity(PreviewFilmEntity previewFilmEntity);
 
     ExpandedFilmDTO expandedFilmEntityToDTO(ExpandedFilmEntity expandedFilmEntity);
+
+    @Mapping(target = "imdbId", source = "imdbId")
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "year", source = "year")
+    @Mapping(target = "type", source = "type")
+    @Mapping(target = "poster", source = "poster")
+    PreviewFilmDTO expandedFilmDTOToPreviewDTO(ExpandedFilmDTO expandedFilmDTO);
+
 }
