@@ -3,6 +3,7 @@ package org.example.domain.service;
 import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
 import org.example.domain.exception.FilmSaveException;
 import org.example.domain.mapper.FilmMapper;
+import org.example.domain.model.PreviewFilmDTO;
 import org.example.domain.model.PreviewFilmResponse;
 import org.example.domain.properties.OMDBProperties;
 import org.example.domain.repository.PreviewFilmRepository;
@@ -104,6 +105,13 @@ public class PreviewFilmService {
         saveFilmsToDatabase(response);
 
         return response;
+    }
+
+    @Cacheable("film_by_emotions")
+    @Transactional(readOnly = true)
+    public Flux<PreviewFilmDTO> searchFilmsByEmotions(List<String> emotions) {
+        return expandedFilmService.getFilmsByEmotions(emotions)
+                .map(filmMapper::expandedFilmDTOToPreviewDTO);
     }
 
 }

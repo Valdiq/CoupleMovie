@@ -1,11 +1,14 @@
 package org.example.domain.service;
 
 import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
+import org.example.domain.document.GenreEmotionDocument;
+import org.example.domain.entity.ExpandedFilmEntity;
 import org.example.domain.exception.FilmSaveException;
 import org.example.domain.mapper.FilmMapper;
 import org.example.domain.model.ExpandedFilmDTO;
 import org.example.domain.properties.OMDBProperties;
 import org.example.domain.repository.ExpandedFilmRepository;
+import org.example.domain.repository.GenreEmotionRepository;
 import org.example.logging.logger.ServiceLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -34,11 +38,14 @@ public class ExpandedFilmService {
 
     private final FilmMapper filmMapper;
 
-    public ExpandedFilmService(ExpandedFilmRepository expandedFilmRepository, OMDBProperties properties, WebClient.Builder webClient, List<ServiceLogger> loggerList, FilmMapper filmMapper) {
+    private final GenreEmotionRepository genreEmotionRepository;
+
+    public ExpandedFilmService(ExpandedFilmRepository expandedFilmRepository, OMDBProperties properties, WebClient.Builder webClient, List<ServiceLogger> loggerList, FilmMapper filmMapper, GenreEmotionRepository genreEmotionRepository) {
         this.expandedFilmRepository = expandedFilmRepository;
         this.properties = properties;
         this.loggerList = loggerList;
         this.filmMapper = filmMapper;
+        this.genreEmotionRepository = genreEmotionRepository;
         this.webClient = webClient.baseUrl(properties.baseUrl()).build();
     }
 
@@ -80,6 +87,35 @@ public class ExpandedFilmService {
         );
 
         return response;
+    }
+
+    public Mono<ExpandedFilmDTO> getRandomFilm() {
+        ExpandedFilmEntity randomFilm = expandedFilmRepository.count()
+                .flatMap(count -> {
+                    int randomOffset = (int) (Math.random() * count);
+                    return expandedFilmRepository.findRandomFilm(randomOffset);
+                }).block();
+
+        return Mono.just(filmMapper.expandedFilmEntityToDTO(randomFilm));
+    }
+
+    public Flux<ExpandedFilmDTO> getFilmsByEmotions(List<String> emotions) {
+        List<GenreEmotionDocument> documents = genreEmotionRepository.findByEmotionsIn(emotions);
+
+        return expandedFilmRepository.findAll()
+                .filter(expandedFilm -> {
+                    String[] filmGenres = expandedFilm.getGenre().split(", ");
+                    return documents.stream()
+                            .anyMatch(document -> {
+                                for (String filmGenre : filmGenres) {
+                                    if (document.getGenre().equalsIgnoreCase(filmGenre)) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            });
+                })
+                .map(filmMapper::expandedFilmEntityToDTO);
     }
 
 }
