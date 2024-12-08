@@ -38,19 +38,25 @@ public class PreviewFilmService {
 
     private final ExpandedFilmService expandedFilmService;
 
-    public PreviewFilmService(PreviewFilmRepository previewFilmRepository, OMDBProperties properties, WebClient.Builder webClient, List<ServiceLogger> loggerList, FilmMapper filmMapper, ExpandedFilmService expandedFilmService) {
+    private final AWSS3Service awss3Service;
+
+    public PreviewFilmService(PreviewFilmRepository previewFilmRepository, OMDBProperties properties, WebClient.Builder webClient, List<ServiceLogger> loggerList, FilmMapper filmMapper, ExpandedFilmService expandedFilmService, AWSS3Service awss3Service) {
         this.previewFilmRepository = previewFilmRepository;
         this.properties = properties;
         this.loggerList = loggerList;
         this.filmMapper = filmMapper;
         this.expandedFilmService = expandedFilmService;
+        this.awss3Service = awss3Service;
         this.webClient = webClient.baseUrl(properties.baseUrl()).build();
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void saveFilmsToDatabase(Flux<PreviewFilmResponse> filmResponses) {
         filmResponses.flatMap(filmResponse -> Flux.fromIterable(filmResponse.search()))
-                .map(filmMapper::previewFilmDTOToEntity)
+                .flatMap(filmPreview ->
+                        Mono.just(awss3Service.putObjectInBucket(filmPreview.imdbId(), filmPreview.poster()))
+                                .flatMap(url -> Mono.just(filmMapper.previewFilmDTOToEntity(filmPreview).setPoster(url)))
+                )
                 .flatMap(film -> previewFilmRepository.save(film)
                         .flatMap(savedPreviewFilm -> expandedFilmService.getFilm(savedPreviewFilm.getImdbId())
                                 .thenReturn(savedPreviewFilm))
