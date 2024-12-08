@@ -1,5 +1,6 @@
 package org.example.webserver;
 
+import org.example.domain.properties.AWSProperties;
 import org.example.domain.properties.OMDBProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +11,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 @SpringBootApplication
-@EnableConfigurationProperties(OMDBProperties.class)
+@EnableConfigurationProperties({OMDBProperties.class, AWSProperties.class})
 @EnableCaching
 @EnableR2dbcRepositories(basePackages = "org.example.domain.repository")
 @EnableMongoRepositories(basePackages = {"org.example.logging.repository", "org.example.domain.repository"})
