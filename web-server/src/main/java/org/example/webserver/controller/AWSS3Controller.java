@@ -20,13 +20,13 @@ public class AWSS3Controller {
     }
 
     @GetMapping("/getPoster")
-    public void getPoster(@RequestParam("bucketName") String bucketName, @RequestParam("objName") String objName) throws Exception {
-        awss3Service.getObjectFromBucket(bucketName, objName);
+    public void getPoster(@RequestParam("objName") String objName) throws Exception {
+        awss3Service.getObjectFromBucket(objName);
     }
 
     @PutMapping("/uploadPoster")
-    public void uploadPoster(@RequestParam("bucketName") String bucketName, @RequestParam("objName") String objName, @RequestParam("url") String url) {
-        awss3Service.putObjectInBucket(bucketName, objName, url);
+    public void uploadPoster(@RequestParam("objName") String objName, @RequestParam("url") String url) {
+        awss3Service.putObjectInBucket(objName, url);
     }
 
 }

@@ -6,5 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Valid
 @ConfigurationProperties(prefix = "aws")
-public record AWSProperties(@NotBlank String accessKey, @NotBlank String secretKey) {
+public record AWSProperties(@NotBlank String accessKey, @NotBlank String secretKey, @NotBlank String bucketName) {
 }
