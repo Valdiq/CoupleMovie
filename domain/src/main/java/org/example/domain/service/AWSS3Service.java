@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
+import org.example.domain.properties.AWSProperties;
 import org.example.logging.logger.ServiceLogger;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AWSS3Service {
 
+    private final AWSProperties awsProperties;
     private final AmazonS3 amazonS3Client;
     private final List<ServiceLogger> loggerList;
 
@@ -26,21 +28,19 @@ public class AWSS3Service {
         return amazonS3Client.listBuckets();
     }
 
-    public String getObjectFromBucket(String bucketName, String objectName) {
-        return amazonS3Client.getUrl(bucketName, objectName).toString();
+    public String getObjectFromBucket(String objectName) {
+        return amazonS3Client.getUrl(awsProperties.bucketName(), objectName + ".jpg").toString();
     }
 
-    public void putObjectInBucket(String bucketName, String objectName, String url) {
+    public String putObjectInBucket(String objectName, String url) {
         objectName += ".jpg";
         File tmpFile = null;
-
 
         try {
             tmpFile = File.createTempFile("image", ".tmp");
             FileUtils.copyURLToFile(new URL(url), tmpFile);
-
-            amazonS3Client.putObject(new PutObjectRequest(bucketName, objectName, tmpFile));
-
+            amazonS3Client.putObject(new PutObjectRequest(awsProperties.bucketName(), objectName, tmpFile));
+            return amazonS3Client.getUrl(awsProperties.bucketName(), objectName).toString();
         } catch (AmazonServiceException | IOException e) {
             loggerList.forEach(
                     serviceLogger -> serviceLogger.log(
@@ -50,6 +50,7 @@ public class AWSS3Service {
                             "Error putting poster to S3 Storage: " + e.getMessage(),
                             LocalDateTime.now())
             );
+            return null;
         } finally {
             if (tmpFile != null && tmpFile.exists()) {
                 tmpFile.delete();

@@ -40,12 +40,15 @@ public class ExpandedFilmService {
 
     private final GenreEmotionRepository genreEmotionRepository;
 
-    public ExpandedFilmService(ExpandedFilmRepository expandedFilmRepository, OMDBProperties properties, WebClient.Builder webClient, List<ServiceLogger> loggerList, FilmMapper filmMapper, GenreEmotionRepository genreEmotionRepository) {
+    private final AWSS3Service awss3Service;
+
+    public ExpandedFilmService(ExpandedFilmRepository expandedFilmRepository, OMDBProperties properties, WebClient.Builder webClient, List<ServiceLogger> loggerList, FilmMapper filmMapper, GenreEmotionRepository genreEmotionRepository, AWSS3Service awss3Service) {
         this.expandedFilmRepository = expandedFilmRepository;
         this.properties = properties;
         this.loggerList = loggerList;
         this.filmMapper = filmMapper;
         this.genreEmotionRepository = genreEmotionRepository;
+        this.awss3Service = awss3Service;
         this.webClient = webClient.baseUrl(properties.baseUrl()).build();
     }
 
@@ -53,7 +56,7 @@ public class ExpandedFilmService {
     public Mono<Void> saveFilmToDatabase(Mono<ExpandedFilmDTO> expandedFilmDTOMono) {
         return expandedFilmDTOMono
                 .map(filmMapper::expandedFilmDTOToEntity)
-                .flatMap(expandedFilmRepository::save)
+                .flatMap(filmEntity -> expandedFilmRepository.save(filmEntity.setPoster(awss3Service.getObjectFromBucket(filmEntity.getImdbId()))))
                 .doOnError(e -> {
                     loggerList.forEach(logger ->
                             logger.log(this.getClass().getName(),
