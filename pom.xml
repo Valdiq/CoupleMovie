@@ -35,6 +35,9 @@
         <r2dbc-mysql.version>1.0.5</r2dbc-mysql.version>
         <jackson-core.version>2.18.1</jackson-core.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <s3.version>2.29.24</s3.version>
+        <aws-jdk.version>1.12.779</aws-jdk.version>
+        <commons-oi.version>2.11.0</commons-oi.version>
 
     </properties>
 
@@ -44,6 +47,21 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-oi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${s3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-s3</artifactId>
+                <version>${aws-jdk.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.asyncer</groupId>
