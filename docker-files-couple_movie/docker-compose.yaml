@@ -24,9 +24,3 @@ services:
       - docker-compose-local_only.env
     ports:
       - "6379:6379"
-
-  kafka:
-    image: apache/kafka
-    container_name: kafka-container-couple-movie
-    ports:
-      - "9092:9092"
