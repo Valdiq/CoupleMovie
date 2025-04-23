@@ -55,8 +55,10 @@ public class ExpandedFilmService {
     @Transactional(rollbackFor = Exception.class)
     public Mono<Void> saveFilmToDatabase(Mono<ExpandedFilmDTO> expandedFilmDTOMono) {
         return expandedFilmDTOMono
-                .map(filmMapper::expandedFilmDTOToEntity)
-                .flatMap(filmEntity -> expandedFilmRepository.save(filmEntity.setPoster(awss3Service.getObjectFromBucket(filmEntity.getImdbId()))))
+                .flatMap(expandedFilmDTO -> Mono.just(awss3Service.putObjectInBucket(expandedFilmDTO.imdbId(), expandedFilmDTO.poster()))
+                        .flatMap(s3Url -> Mono.just(filmMapper.expandedFilmDTOToEntity(expandedFilmDTO).setPoster(s3Url)))
+                )
+                .flatMap(expandedFilmRepository::save)
                 .doOnError(e -> {
                     loggerList.forEach(logger ->
                             logger.log(this.getClass().getName(),

@@ -38,6 +38,7 @@
         <s3.version>2.29.24</s3.version>
         <aws-jdk.version>1.12.779</aws-jdk.version>
         <commons-oi.version>2.11.0</commons-oi.version>
+        <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
 
     </properties>
 
@@ -141,6 +142,11 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jakarta.xml.bind-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
