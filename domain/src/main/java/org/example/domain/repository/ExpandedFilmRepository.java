@@ -1,14 +1,16 @@
 package org.example.domain.repository;
 
 import org.example.domain.entity.ExpandedFilmEntity;
-import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Repository
-public interface ExpandedFilmRepository extends R2dbcRepository<ExpandedFilmEntity, Long> {
+public interface ExpandedFilmRepository extends JpaRepository<ExpandedFilmEntity, Long> {
 
-    @Query("SELECT * FROM expanded_film LIMIT 1 OFFSET :offset")
-    public Mono<ExpandedFilmEntity> findRandomFilm(long offset);
+    @Query(value = "SELECT * FROM expanded_film LIMIT 1 OFFSET :offset", nativeQuery = true)
+    public Optional<ExpandedFilmEntity> findRandomFilm(@Param("offset") long offset);
 }

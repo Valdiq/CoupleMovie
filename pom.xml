@@ -29,11 +29,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring-boot.version>3.3.5</spring-boot.version>
-        <mysql-connector.version>9.1.0</mysql-connector.version>
+        <mysql-connector.version>9.3.0</mysql-connector.version>
         <lombok.version>1.18.34</lombok.version>
         <reactor-test.version>3.7.0</reactor-test.version>
         <jackson-databind.version>2.18.1</jackson-databind.version>
-        <r2dbc-mysql.version>1.0.5</r2dbc-mysql.version>
         <jackson-core.version>2.18.1</jackson-core.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <s3.version>2.29.24</s3.version>
@@ -68,11 +67,6 @@
                 <version>${aws-jdk.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.asyncer</groupId>
-                <artifactId>r2dbc-mysql</artifactId>
-                <version>${r2dbc-mysql.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson-databind.version}</version>
@@ -89,7 +83,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
@@ -99,12 +93,7 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-webflux</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+                <artifactId>spring-boot-starter-data-jpa</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
             <dependency>

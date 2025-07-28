@@ -1,24 +1,28 @@
 package org.example.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "preview_film")
 @Data
 @Accessors(chain = true)
-@Table("preview_film")
+@NoArgsConstructor
+@AllArgsConstructor
 public class PreviewFilmEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
 
     private String year;
 
-    @Column("imdb_id")
+    @Column(name = "imdb_id")
     private String imdbId;
 
     private String type;
