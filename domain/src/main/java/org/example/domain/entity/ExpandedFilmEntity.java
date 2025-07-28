@@ -1,17 +1,21 @@
 package org.example.domain.entity;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
+@Entity
+@Table(name = "expanded_film")
 @Data
 @Accessors(chain = true)
-@Table("expanded_film")
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExpandedFilmEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
@@ -40,13 +44,13 @@ public class ExpandedFilmEntity {
 
     private String poster;
 
-    @Column("imdb_rating")
+    @Column(name = "imdb_rating")
     private String imdbRating;
 
-    @Column("imdb_votes")
+    @Column(name = "imdb_votes")
     private String imdbVotes;
 
-    @Column("imdb_id")
+    @Column(name = "imdb_id")
     private String imdbId;
 
     private String type;

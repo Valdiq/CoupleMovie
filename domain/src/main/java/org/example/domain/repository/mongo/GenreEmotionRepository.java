@@ -1,4 +1,4 @@
-package org.example.domain.repository;
+package org.example.domain.repository.mongo;
 
 import org.example.domain.document.GenreEmotionDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
