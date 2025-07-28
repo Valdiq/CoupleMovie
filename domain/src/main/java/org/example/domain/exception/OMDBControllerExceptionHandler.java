@@ -33,7 +33,7 @@ public class OMDBControllerExceptionHandler {
 
     @ExceptionHandler(WebClientResponseException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ResponseEntity<OMDBControllerExceptionResponse> handleWebClientResponseException(WebClientResponseException exception, HttpServletRequest request) {
+    ResponseEntity<OMDBControllerExceptionResponse> handleWebClientResponseException(Exception exception, HttpServletRequest request) {
 
         var response = new OMDBControllerExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI(), request.getParameterMap(), exception.getClass().getName(), exception.getMessage(), LocalDateTime.now());
         loggerList.forEach(logger -> {
