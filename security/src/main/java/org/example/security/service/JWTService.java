@@ -5,8 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 import org.example.security.entity.UserEntity;
+import org.example.security.properties.JWTProperties;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
@@ -14,9 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class JWTService {
 
-    private static final String SECRET_KEY = "cae242bcf796dd318cd6963e8f116dea19c190d7c558d789b2b1ef935c2c978c";
+    private final JWTProperties jwtProperties;
 
     public String generateToken(UserEntity userEntity) {
         return generateToken(new HashMap<>(), userEntity);
@@ -27,7 +30,7 @@ public class JWTService {
                 .claims(extraClaims)
                 .subject(userEntity.getUsername())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.expirationTimeMs()))
                 .signWith(getSignOInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -45,7 +48,7 @@ public class JWTService {
     }
 
     private Key getSignOInKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
     }
 
     public Date extractExpirationDate(String token) {

@@ -5,11 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.example.security.util.UserRoles;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -29,9 +32,17 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private Set<UserRoles> roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        roles.forEach(r -> {
+            grantedAuthorities.add(new SimpleGrantedAuthority(r.toString()));
+        });
+        return grantedAuthorities;
     }
 
     @Override
